@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sangam Dairy Local Sales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <!-- Login Overlay -->
+    <div id="login-overlay" style="position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <img src="logo.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15; width: 90%; max-width: 800px; pointer-events: none; z-index: 0;" onerror="this.style.display='none'" />
+      <div class="card" style="width: 100%; max-width: 400px; text-align: center; padding: 2rem; z-index: 1; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="logo.png" style="height: 60px; margin-bottom: 1.5rem;" onerror="this.style.display='none'" />
+        <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Sangam Dairy Login</h2>
+        <input type="text" id="login-username" placeholder="Username" class="input-field" style="margin-bottom: 1rem; width: 100%; text-align: center;" autocomplete="off" />
+        <input type="password" id="login-password" placeholder="Password" class="input-field" style="margin-bottom: 1.5rem; width: 100%; text-align: center;" autocomplete="off" />
+        <button id="login-btn" class="btn-primary" style="width: 100%;">Login</button>
+        <p id="login-error" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials!</p>
+      </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+      <div class="nav-brand">
+        <img src="logo.png" alt="Sangam Logo" style="height: 36px; width: auto; object-fit: contain; margin-right: 0.25rem;" onerror="this.style.display='none'" />
+        Sangam Dairy Local Sales
+      </div>
+      <div class="nav-actions">
+        <div id="live-clock" style="font-size: 1.1rem; font-weight: 600; color: var(--primary); text-align: right; line-height: 1.2;"></div>
+      </div>
+    </nav>
+
+    <div id="app-container">
+      <main id="main-content">
+        
+        <!-- Dashboard / Home View -->
+        <div id="dashboard-view" class="view active">
+          
+          <!-- Top Bar: Search & Global Month Filter -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+            <div style="flex: 1; max-width: 500px;">
+              <h2 style="margin-bottom: 0.5rem;">Find Candidate</h2>
+              <div style="display: flex; gap: 0.5rem; width: 100%;">
+                <div style="position: relative; flex: 1;">
+                  <input type="text" id="search-input" placeholder="Search by Name or Sample No..." style="width: 100%; box-sizing: border-box;" />
+                  <div id="search-dropdown" class="dropdown-menu" style="display: none;"></div>
+                </div>
+                <button id="search-btn" class="btn-primary">Find</button>
+              </div>
+              <p id="search-error" class="text-danger" style="margin-top: 0.25rem; font-size: 0.85rem;"></p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+              <div style="display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--card-border);">
+                <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+                <input type="month" id="dashboard-month-filter" style="width: auto; padding: 0.25rem 0.5rem; background: transparent; border: none; box-shadow: none;" />
+              </div>
+            </div>
+  </div>
+
+          <div class="hub-grid">
+            <button class="hub-btn hub-btn-new" onclick="window.showNewMemberModal()">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">➕</span>
+              New Member
+            </button>
+            <button class="hub-btn hub-btn-view" onclick="window.switchView('membersList')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</span>
+              View / Edit Members
+            </button>
+            <button class="hub-btn hub-btn-analysis" onclick="window.switchView('analysis')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</span>
+              Member Analysis
+            </button>
+            <button class="hub-btn hub-btn-export" onclick="window.switchView('export')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📤</span>
+              Export Center
+            </button>
+            <button class="hub-btn hub-btn-purchases" onclick="window.switchView('purchases')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📝</span>
+              Monthly Purchases
+            </button>
+            <button class="hub-btn hub-btn-settings" onclick="window.switchView('settings')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</span>
+              Pricing Settings
+            </button>
+            <button class="hub-btn hub-btn-calculator" onclick="window.showCalculatorModal()">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧮</span>
+              Calculator
+            </button>
+            <button class="hub-btn hub-btn-backup" onclick="document.getElementById('backup-modal').classList.add('active')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">💾</span>
+              Backup DB
+            </button>
+            <button class="hub-btn hub-btn-clean" onclick="document.getElementById('db-clean-modal').classList.add('active')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧹</span>
+              DB Clean
+            </button>
+            <button class="hub-btn hub-btn-logout" onclick="window.logout()">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🚪</span>
+              Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Analysis View -->
+        <div id="analysis-view" class="view">
+          <div class="profile-header" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <button class="btn-back-special back-to-dash">&lt;- Back</button>
+              <h2 style="margin: 0;">Member Analysis Box</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+              <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+              <input type="month" id="analysis-month" style="border:none; background:transparent;" />
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1.5rem; max-width: 1200px; margin: 0 auto;">
+            <div class="card" style="flex: 1;">
+              <div class="stat-row" style="margin-top: 0; padding-top: 0; border-top: none;">
+                <span>Total Registered Members:</span>
+                <span id="dash-total-members" style="font-weight: 600;">0</span>
+              </div>
+              <div class="stat-row">
+                <span>Members Active (This Month):</span>
+                <span id="dash-active-members" style="font-weight: 600;">0</span>
+              </div>
+              <div class="stat-row">
+                <span>Total Amount Due:</span>
+                <span id="dash-total-due" class="text-danger" style="font-weight: 600;">₹0.00</span>
+              </div>
+              <div class="stat-row">
+                <span>Total Amount Paid:</span>
+                <span id="dash-total-paid" class="text-success" style="font-weight: 600;">₹0.00</span>
+              </div>
+              <div class="stat-row" style="margin-top: 0.5rem; border-top: 1px dashed var(--card-border); padding-top: 0.5rem;">
+                <span>Total Litre Cards Sold:</span>
+                <span id="dash-litre-cards" class="text-primary" style="font-weight: 600;">0</span>
+              </div>
+              <div class="stat-row">
+                <span>Total Half-Litre Cards Sold:</span>
+                <span id="dash-half-cards" class="text-primary" style="font-weight: 600;">0</span>
+              </div>
+            </div>
+
+            <!-- Charts Container -->
+            <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 2rem;">
+              <div style="display: flex; justify-content: space-around;">
+                <div style="width: 250px; height: 250px;">
+                  <h4 style="text-align: center; margin-bottom: 0.5rem;">Amount Due vs Paid</h4>
+                  <canvas id="chartFinance"></canvas>
+                </div>
+                <div style="width: 250px; height: 250px;">
+                  <h4 style="text-align: center; margin-bottom: 0.5rem;">Card Types Sold</h4>
+                  <canvas id="chartCards"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export View -->
+        <div id="export-view" class="view">
+          <div class="profile-header" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <button class="btn-back-special back-to-dash">&lt;- Back</button>
+              <h2 style="margin: 0;">Export Center</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+              <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+              <input type="month" id="export-month" style="border:none; background:transparent;" />
+            </div>
+          </div>
+          <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Export Option 1 -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                <span style="font-size: 1rem; font-weight: 600;">1. Overall Members Details</span>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn-secondary" onclick="window.exportCSV('overall')">CSV</button>
+                  <button class="btn-secondary" onclick="window.exportPDF('overall')">PDF</button>
+                </div>
+              </div>
+              <!-- Export Option 2 -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                <span style="font-size: 1rem; font-weight: 600;">2. Selected Month Purchases</span>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn-secondary" onclick="window.exportCSV('month')">CSV</button>
+                  <button class="btn-secondary" onclick="window.exportPDF('month')">PDF</button>
+                </div>
+              </div>
+              <!-- Export Option 3 -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                <div style="flex: 1; margin-right: 1rem;">
+                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">3. Selected Member Purchases</span>
+                  <div style="position: relative;">
+                    <input type="text" id="export-member-input" placeholder="Exact Member Name or Sample No" style="width: 100%; box-sizing: border-box;" />
+                    <div id="export-member-dropdown" class="dropdown-menu" style="display: none;"></div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn-secondary" onclick="window.exportCSV('member')">CSV</button>
+                  <button class="btn-secondary" onclick="window.exportPDF('member')">PDF</button>
+                </div>
+              </div>
+              <!-- Export Option 4 -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                <div style="flex: 1; margin-right: 1rem;">
+                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">4. Selected Year Purchases</span>
+                  <input type="number" id="export-year-input" placeholder="Enter Year (e.g., 2026)" style="width: 100%;" />
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn-secondary" onclick="window.exportCSV('year')">CSV</button>
+                  <button class="btn-secondary" onclick="window.exportPDF('year')">PDF</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+          <div class="profile-header">
+            <button class="btn-back-special back-to-dash">&lt;- Back</button>
+            <h2>Global Pricing Settings</h2>
+          </div>
+          <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                  <label>Half-Litre Range</label>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" id="setting-half-min" placeholder="Min" />
+                    <span style="color: var(--text-secondary);">to</span>
+                    <input type="number" id="setting-half-max" placeholder="Max" />
+                  </div>
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                  <label>Half-Litre Cost (₹)</label>
+                  <input type="number" id="setting-half-litre" />
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                  <label>Litre Range</label>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" id="setting-litre-min" placeholder="Min" />
+                    <span style="color: var(--text-secondary);">to</span>
+                    <input type="number" id="setting-litre-max" placeholder="Max" />
+                  </div>
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                  <label>Litre Cost (₹)</label>
+                  <input type="number" id="setting-litre" />
+                </div>
+              </div>
+              
+              <div style="display: flex; align-items: center; border-top: 1px dashed var(--card-border); padding-top: 1.5rem; margin-top: 0.5rem;">
+                <button id="save-settings-btn" class="btn-success">Save Settings</button>
+                <span id="settings-msg" style="margin-left: 0.5rem; color: var(--success); font-weight: 600;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Purchases View -->
+        <div id="purchases-view" class="view">
+          <div class="profile-header" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <button class="btn-back-special back-to-dash">&lt;- Back</button>
+              <h2 style="margin: 0;">Current Month Purchases</h2>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+                <input type="month" id="purchases-month" style="border:none; background:transparent;" />
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn-secondary" onclick="window.exportCSV('month')">CSV</button>
+                <button class="btn-secondary" onclick="window.exportPDF('month')">PDF</button>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="overflow-x: auto;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: var(--hover-bg); text-align: left; border-bottom: 2px solid var(--card-border);">
+                  <th style="padding: 0.75rem;">Member Details</th>
+                  <th style="padding: 0.75rem;">Purchased Cards</th>
+                  <th style="padding: 0.75rem;">Total Paid</th>
+                  <th style="padding: 0.75rem;">Total Due</th>
+                  <th style="padding: 0.75rem;">Total Due Cards</th>
+                  <th style="padding: 0.75rem;">Total Dues</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Members List View -->
+        <div id="members-list-view" class="view">
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <button class="btn-back-special back-to-dash">&lt;- Back</button>
+              <h2 style="margin: 0;">All Members</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <button id="clear-filter-btn" class="btn-secondary" style="display: none; padding: 0.5rem 1rem;">Clear Filter ❌</button>
+              <select id="all-members-sort" style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <option value="name-asc">Sort: Name (A-Z)</option>
+                <option value="name-desc">Sort: Name (Z-A)</option>
+                <option value="sample-asc">Sort: Sample No (Low-High)</option>
+                <option value="sample-desc">Sort: Sample No (High-Low)</option>
+              </select>
+              <input type="text" id="all-members-search" placeholder="Search by name or sample no..." style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); width: 250px;" />
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <!-- Target Period Box -->
+            <div class="card" style="flex: 1; min-width: 200px; padding: 1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; text-align: center;">
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Target Period</span>
+              <div style="display: flex; gap: 1rem; font-size: 0.9rem;">
+                <label><input type="radio" name="period-type" value="month" checked> Month</label>
+                <label><input type="radio" name="period-type" value="year"> Year</label>
+              </div>
+              <input type="month" id="all-members-month" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--primary); background: #e0f2fe; color: var(--primary); font-weight: 600; font-size: 1rem; width: 100%; max-width: 220px; outline: none; cursor: pointer;" />
+              <input type="number" id="all-members-year" style="display: none; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--primary); background: #e0f2fe; color: var(--primary); font-weight: 600; font-size: 1rem; width: 100%; max-width: 220px; outline: none;" placeholder="YYYY" min="2000" max="2100" />
+            </div>
+            
+            <!-- Total Members Box -->
+            <div id="box-total-members" class="card highlightable" style="flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--primary); cursor: pointer; transition: transform 0.2s;">
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Total Members</span>
+              <span id="all-members-total-count" style="font-size: 2.5rem; font-weight: 700; color: var(--primary); line-height: 1;">0</span>
+            </div>
+            
+            <!-- Active This Month Box -->
+            <div id="box-active-members" class="card highlightable" style="position: relative; flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--success); cursor: pointer; transition: transform 0.2s;">
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Active Target Period</span>
+              <span id="all-members-active-count" style="font-size: 2.5rem; font-weight: 700; color: var(--success); line-height: 1;">0</span>
+            </div>
+
+            <!-- Total Due This Month Box -->
+            <div id="box-total-due" class="card highlightable" style="flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--danger); cursor: pointer; transition: transform 0.2s;">
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Total Due (Target)</span>
+              <span id="all-members-total-due" style="font-size: 2rem; font-weight: 700; color: var(--danger); line-height: 1.2;">₹0.00</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div id="all-members-list" class="cards-list">
+              <!-- Member items injected here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Candidate Profile View -->
+        <div id="profile-view" class="view">
+          <div class="profile-header" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+              <button id="profile-back-btn" class="btn-back-special">&lt;- Back</button>
+              <h2 id="profile-name">Candidate Name</h2>
+              <span class="badge" id="profile-sample-no"></span>
+              <span class="badge" id="profile-mobile-no" style="background: var(--primary); color: white; display: none;"></span>
+              <button id="edit-profile-btn" class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">✏️ Edit</button>
+              <button id="delete-profile-btn" class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; color: var(--danger);">🗑️ Delete</button>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--card-border);">
+              <span style="font-weight: 600; color: var(--primary);">View Month:</span>
+              <input type="month" id="global-month-filter" style="width: auto; padding: 0.25rem 0.5rem; background: transparent; border: none; box-shadow: none;" />
+            </div>
+          </div>
+
+          <div class="layout-grid">
+            <!-- Left Column: Notes & Financials & Analytics -->
+            <div class="left-col">
+              <div class="card">
+                <h3>Overall Dues Overview</h3>
+                <div class="stat-row" style="margin-top: 0; border-top: none; padding-top: 0;">
+                  <span>Overall Total Due</span>
+                  <span id="overall-total-due" class="text-danger" style="font-size: 1.25rem;">₹0.00</span>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                  <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Monthly Breakdown (Unpaid)</h4>
+                  <div id="monthly-dues-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+                    <!-- Monthly dues injected here -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="card financials-card" style="margin-top: 1.5rem;">
+                <h3>Financial Summary (Selected Month)</h3>
+                <div class="stat-row">
+                  <span>Total Amount Paid</span>
+                  <span id="total-paid" class="text-success">₹0.00</span>
+                </div>
+                <div class="stat-row">
+                  <span>Total Amount Due</span>
+                  <span id="total-due" class="text-danger">₹0.00</span>
+                </div>
+                <div class="stat-row">
+                  <span>Cards Taken</span>
+                  <span id="analytics-card-count" class="text-primary">0</span>
+                </div>
+              </div>
+
+              <div class="card highlightable" id="notes-card" style="margin-top: 1.5rem;">
+                <h3>Alerts / Notes</h3>
+                <textarea id="notes-input" placeholder="Type any important notes or alerts here..."></textarea>
+              </div>
+            </div>
+
+            <!-- Right Column: Cards -->
+            <div class="right-col">
+              <div class="card">
+                <div class="cards-header">
+                  <h3>Cards</h3>
+                  <button id="add-card-btn" class="btn-primary">+ Add Card</button>
+                </div>
+                
+                <div id="add-card-form" class="form-container" style="display: none;">
+                  <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                    <div style="display: flex; gap: 1rem; width: 100%;">
+                      <input type="number" id="new-card-number" placeholder="Card Number" style="flex: 1;" />
+                      <input type="number" id="new-card-cost" placeholder="Cost (₹)" step="0.01" style="flex: 1;" />
+                    </div>
+                    <div class="form-actions" style="width: 100%;">
+                      <button id="save-card-btn" class="btn-success">Save</button>
+                      <button id="cancel-card-btn" class="btn-secondary">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="cards-list" class="cards-list">
+                  <!-- Card items injected here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Candidate Modal -->
+        <div id="create-modal" class="modal">
+          <div class="modal-content card">
+            <h2>New Member</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Add a new candidate to the system.</p>
+            
+            <div class="form-group">
+              <label>Candidate Name <span style="color: var(--danger);">(Mandatory)</span></label>
+              <input type="text" id="new-name" placeholder="Enter Full Name" style="border: 2px solid var(--danger);" />
+            </div>
+            <div class="form-group">
+              <label>Mobile Number (Optional)</label>
+              <input type="text" id="new-mobile-no" placeholder="Enter Mobile Number" />
+            </div>
+            <div class="form-group">
+              <label>Sample No (Optional)</label>
+              <input type="text" id="new-sample-no" placeholder="Leave blank to auto-generate" />
+            </div>
+            <div class="form-actions">
+              <button id="save-candidate-btn" class="btn-primary">Save Member</button>
+              <button id="cancel-candidate-btn" class="btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Edit Candidate Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content card">
+        <h2>Edit Member Profile</h2>
+        <div class="form-group">
+          <label>Member Name <span style="color: var(--danger);">*</span></label>
+          <input type="text" id="edit-member-name" style="border: 2px solid var(--danger);" />
+        </div>
+        <div class="form-group">
+          <label>Mobile Number (Optional)</label>
+          <input type="text" id="edit-member-mobile-no" />
+        </div>
+        <div class="form-group">
+          <label>Sample Number (Optional)</label>
+          <input type="text" id="edit-member-sample-no" />
+        </div>
+        <div class="form-actions">
+          <button id="save-edit-member-btn" class="btn-success">Save Changes</button>
+          <button id="cancel-edit-member-btn" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculator Modal -->
+    <div id="calculator-modal" class="modal">
+      <div class="modal-content card" style="max-width: 320px; padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="margin: 0; font-size: 1.25rem;">Calculator</h2>
+          <button class="btn-icon" onclick="document.getElementById('calculator-modal').classList.remove('active')" style="padding: 0;">✖</button>
+        </div>
+        <div class="calc-container">
+          <div style="background: #f1f5f9; border-radius: 8px; padding: 0.5rem 1rem; text-align: right; margin-bottom: 1rem; min-height: 4.5rem; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid var(--card-border); overflow-x: auto;">
+            <div id="calc-history" style="font-size: 0.9rem; color: var(--text-secondary); min-height: 1.2rem;"></div>
+            <div id="calc-display" style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary);">0</div>
+          </div>
+          <div class="calc-keypad">
+            <button class="calc-btn calc-btn-clear" onclick="window.calcAction('clear')">C</button>
+            <button class="calc-btn calc-btn-op" onclick="window.calcAction('div')">÷</button>
+            <button class="calc-btn calc-btn-op" onclick="window.calcAction('mul')">×</button>
+            <button class="calc-btn calc-btn-op" onclick="window.calcAction('sub')">-</button>
+            
+            <button class="calc-btn" onclick="window.calcAction('num', 7)">7</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 8)">8</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 9)">9</button>
+            <button class="calc-btn calc-btn-op" onclick="window.calcAction('add')" style="grid-row: span 2;">+</button>
+            
+            <button class="calc-btn" onclick="window.calcAction('num', 4)">4</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 5)">5</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 6)">6</button>
+            
+            <button class="calc-btn" onclick="window.calcAction('num', 1)">1</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 2)">2</button>
+            <button class="calc-btn" onclick="window.calcAction('num', 3)">3</button>
+            <button class="calc-btn calc-btn-equals" onclick="window.calcAction('eq')" style="grid-row: span 2;">=</button>
+            
+            <button class="calc-btn" onclick="window.calcAction('num', 0)" style="grid-column: span 2;">0</button>
+            <button class="calc-btn" onclick="window.calcAction('dot')">.</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backup Modal -->
+    <div id="backup-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="margin: 0; font-size: 1.5rem;">Database Backup</h2>
+          <button class="btn-icon" onclick="document.getElementById('backup-modal').classList.remove('active')" style="padding: 0;">✖</button>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Export a copy of your database for safekeeping, or restore an existing backup file. <b>Note: Restoring a backup will overwrite all current data!</b></p>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <button class="btn-primary" onclick="window.exportBackup()" style="padding: 1rem; font-size: 1rem;">📤 Export Backup</button>
+          <button class="btn-danger" onclick="window.restoreBackup()" style="padding: 1rem; font-size: 1rem; background: var(--danger); color: white;">📥 Restore Backup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DB Clean Modal -->
+    <div id="db-clean-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--danger);">Clean Database</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Enter passcode to delete ALL data and start fresh.</p>
+        <input type="password" id="db-clean-passcode" placeholder="Passcode" style="margin-bottom: 1rem; width: 100%; text-align: center;" />
+        <p id="db-clean-error" style="color: var(--danger); margin-bottom: 1rem; display: none;">Invalid passcode!</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="confirm-db-clean-btn" class="btn-primary" style="background: var(--danger);">Confirm Clean</button>
+          <button onclick="document.getElementById('db-clean-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--primary); margin-bottom: 1rem;">Confirm Logout</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="confirm-logout-btn" class="btn-primary">Logout</button>
+          <button onclick="document.getElementById('logout-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Restore Modal -->
+    <div id="confirm-restore-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--danger); margin-bottom: 1rem;">Confirm Restore</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">WARNING: Restoring a backup will permanently overwrite your current database. The app will restart automatically. Are you sure you want to proceed?</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="proceed-restore-btn" class="btn-primary" style="background: var(--danger);">Restore</button>
+          <button onclick="document.getElementById('confirm-restore-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm DB Clean Final Modal -->
+    <div id="confirm-db-clean-final-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--danger); margin-bottom: 1rem;">Final Warning</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Are you absolutely sure? This will wipe EVERYTHING and cannot be undone!</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="proceed-db-clean-btn" class="btn-primary" style="background: var(--danger);">Wipe Data</button>
+          <button onclick="document.getElementById('confirm-db-clean-final-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--primary); margin-bottom: 1rem;">Notification</h2>
+        <p id="custom-alert-message" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="custom-alert-ok-btn" class="btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="custom-confirm-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--danger); margin-bottom: 1rem;">Confirm Action</h2>
+        <p id="custom-confirm-message" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="custom-confirm-yes-btn" class="btn-primary" style="background: var(--danger);">Yes</button>
+          <button id="custom-confirm-no-btn" class="btn-secondary">No</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../node_modules/jspdf/dist/jspdf.umd.min.js"></script>
+    <script src="../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="../node_modules/chart.js/dist/chart.umd.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>

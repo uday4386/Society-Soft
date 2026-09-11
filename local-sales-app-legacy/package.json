@@ -1,0 +1,42 @@
+{
+  "name": "local-sales-app-legacy",
+  "productName": "Sangam Dairy Local Sales (Windows 7)",
+  "version": "1.0.0",
+  "description": "Local Sales application",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  "author": {
+    "name": "swathi00487",
+    "email": "166385419+uday4386@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-deb": "^7.11.2",
+    "@electron-forge/maker-rpm": "^7.11.2",
+    "@electron-forge/maker-squirrel": "^7.11.2",
+    "@electron-forge/maker-zip": "^7.11.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.2",
+    "@electron-forge/plugin-fuses": "^7.11.2",
+    "@electron/fuses": "^1.8.0",
+    "electron": "22.3.27",
+    "jimp": "^0.16.1",
+    "png-to-ico": "^3.0.2",
+    "png2icons": "^2.0.1"
+  }
+}
