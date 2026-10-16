@@ -12,7 +12,8 @@ const store = new Store({
     candidates: {}, // candidates keyed by ID
     globalSettings: {
       halfLitreCost: 100, // default costs
-      litreCost: 200
+      litreCost: 200,
+      zoomFactor: 1.0
     }
   }
 });
@@ -33,11 +34,21 @@ const createWindow = () => {
   const { Menu } = require('electron');
   Menu.setApplicationMenu(null);
 
+  // Enable DevTools shortcut (F12) and Reload (Ctrl+R / F5) for easy testing
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.type === 'keyDown') {
+      if (input.key === 'F12') {
+        mainWindow.webContents.toggleDevTools();
+        event.preventDefault();
+      } else if (input.key === 'F5' || ((input.control || input.meta) && input.key.toLowerCase() === 'r')) {
+        mainWindow.reload();
+        event.preventDefault();
+      }
+    }
+  });
+
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
-  // Open the DevTools only in development, optional here.
-  // mainWindow.webContents.openDevTools();
 };
 
 // Setup IPC Handlers before ready
@@ -47,6 +58,10 @@ ipcMain.handle('get-candidates', async () => {
 
 ipcMain.handle('save-candidate', async (event, candidate) => {
   return await store.saveCandidate(candidate);
+});
+
+ipcMain.handle('save-candidates', async (event, candidates) => {
+  return await store.saveCandidates(candidates);
 });
 
 ipcMain.handle('delete-candidate', async (event, id) => {

@@ -15,21 +15,65 @@
       <img src="logo.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15; width: 90%; max-width: 800px; pointer-events: none; z-index: 0;" onerror="this.style.display='none'" />
       <div class="card" style="width: 100%; max-width: 400px; text-align: center; padding: 2rem; z-index: 1; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
         <img src="logo.png" style="height: 60px; margin-bottom: 1.5rem;" onerror="this.style.display='none'" />
-        <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Sangam Dairy Login</h2>
-        <input type="text" id="login-username" placeholder="Username" class="input-field" style="margin-bottom: 1rem; width: 100%; text-align: center;" autocomplete="off" />
-        <input type="password" id="login-password" placeholder="Password" class="input-field" style="margin-bottom: 1.5rem; width: 100%; text-align: center;" autocomplete="off" />
-        <button id="login-btn" class="btn-primary" style="width: 100%;">Login</button>
-        <p id="login-error" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials!</p>
+        <h2 style="margin-bottom: 1.5rem; color: var(--primary);" data-i18n="login_title">Sangam Dairy Login</h2>
+        <input type="text" id="login-username" placeholder="Username" data-i18n-placeholder="login_username_placeholder" class="input-field" style="margin-bottom: 1rem; width: 100%; text-align: center;" autocomplete="off" />
+        <input type="password" id="login-password" placeholder="Password" data-i18n-placeholder="login_password_placeholder" class="input-field" style="margin-bottom: 1.5rem; width: 100%; text-align: center;" autocomplete="off" />
+        <button id="login-btn" class="btn-primary" style="width: 100%;" data-i18n="login_btn">Login</button>
+        <p id="login-error" style="color: var(--danger); margin-top: 1rem; display: none;" data-i18n="login_invalid">Invalid credentials!</p>
       </div>
     </div>
 
     <!-- Top Navigation -->
+    <!-- Top Navigation -->
     <nav class="top-nav">
       <div class="nav-brand">
         <img src="logo.png" alt="Sangam Logo" style="height: 36px; width: auto; object-fit: contain; margin-right: 0.25rem;" onerror="this.style.display='none'" />
-        Sangam Dairy Local Sales
+        <span data-i18n="brand_title">Sangam Dairy Local Sales</span>
       </div>
       <div class="nav-actions">
+        <!-- Zoom Symbol Button & Popup Box -->
+        <div class="zoom-dropdown-container">
+          <button id="zoom-toggle-btn" class="zoom-icon-btn" title="Zoom Settings (Click to adjust scale)" aria-label="Zoom Settings">
+            <span class="zoom-icon-symbol">🔍</span>
+            <span id="zoom-badge" class="zoom-badge" style="display: none;">100%</span>
+          </button>
+          
+          <div id="zoom-popover" class="zoom-popover" style="display: none;">
+            <div class="zoom-popover-header">
+              <span style="font-weight: 600; font-size: 0.88rem; color: var(--primary); display: flex; align-items: center; gap: 4px;">
+                <span>🔍</span> <span data-i18n="zoom_scale">Screen Scale (Zoom)</span>
+              </span>
+              <button id="zoom-popover-close" class="zoom-popover-close" title="Close" aria-label="Close">✕</button>
+            </div>
+
+            <!-- Stepper: [-] [ 100% ] [+] -->
+            <div class="zoom-stepper">
+              <button id="zoom-out-btn" class="zoom-stepper-btn" title="Zoom Out (Decrease Scale)" aria-label="Zoom Out">−</button>
+              <button id="zoom-reset-btn" class="zoom-stepper-reset" title="Click to Reset to 100%" aria-label="Reset Zoom">100%</button>
+              <button id="zoom-in-btn" class="zoom-stepper-btn" title="Zoom In (Increase Scale)" aria-label="Zoom In">+</button>
+            </div>
+
+            <!-- Range Slider -->
+            <div class="zoom-slider-row">
+              <input type="range" id="zoom-popover-slider" min="60" max="140" step="5" value="100" title="Slide to adjust zoom" />
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="zoom-preset-grid">
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="0.75">75%</button>
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="0.80">80% (Win 7)</button>
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="0.85">85%</button>
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="0.90">90%</button>
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="1.00">100%</button>
+              <button type="button" class="zoom-chip zoom-preset-btn" data-zoom="1.15">115%</button>
+            </div>
+
+            <div class="zoom-shortcut-hint" data-i18n="zoom_shortcuts">
+              Shortcuts: <b>Ctrl + / −</b> or <b>Ctrl + Scroll</b>
+            </div>
+          </div>
+        </div>
+
         <div id="live-clock" style="font-size: 1.1rem; font-weight: 600; color: var(--primary); text-align: right; line-height: 1.2;"></div>
       </div>
     </nav>
@@ -40,81 +84,85 @@
         <!-- Dashboard / Home View -->
         <div id="dashboard-view" class="view active">
           
-          <!-- Top Bar: Search & Global Month Filter -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
-            <div style="flex: 1; max-width: 500px;">
-              <h2 style="margin-bottom: 0.5rem;">Find Candidate</h2>
+          <!-- Top Bar: Search, Language Switcher & Global Month Filter -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div style="flex: 1; max-width: 500px; min-width: 280px;">
+              <h2 style="margin-bottom: 0.5rem;" data-i18n="find_candidate_title">Find Candidate</h2>
               <div style="display: flex; gap: 0.5rem; width: 100%;">
                 <div style="position: relative; flex: 1;">
-                  <input type="text" id="search-input" placeholder="Search by Name or Sample No..." style="width: 100%; box-sizing: border-box;" />
+                  <input type="text" id="search-input" placeholder="Search by Name or Sample No..." data-i18n-placeholder="search_placeholder" style="width: 100%; box-sizing: border-box;" />
                   <div id="search-dropdown" class="dropdown-menu" style="display: none;"></div>
                 </div>
-                <button id="search-btn" class="btn-primary">Find</button>
+                <button id="search-btn" class="btn-primary" data-i18n="find_btn">Find</button>
               </div>
               <p id="search-error" class="text-danger" style="margin-top: 0.25rem; font-size: 0.85rem;"></p>
             </div>
             
-            <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--card-border);">
-                <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+                <span style="font-weight: 600; color: var(--primary);" data-i18n="dashboard_month_label">Dashboard Month:</span>
                 <input type="month" id="dashboard-month-filter" style="width: auto; padding: 0.25rem 0.5rem; background: transparent; border: none; box-shadow: none;" />
               </div>
             </div>
-  </div>
+          </div>
 
           <div class="hub-grid">
             <button class="hub-btn hub-btn-new" onclick="window.showNewMemberModal()">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">➕</span>
-              New Member
+              <span data-i18n="hub_new_member">New Member</span>
             </button>
             <button class="hub-btn hub-btn-view" onclick="window.switchView('membersList')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</span>
-              View / Edit Members
+              <span data-i18n="hub_view_members">View / Edit Members</span>
             </button>
             <button class="hub-btn hub-btn-analysis" onclick="window.switchView('analysis')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</span>
-              Member Analysis
+              <span data-i18n="hub_analysis">Member Analysis</span>
             </button>
             <button class="hub-btn hub-btn-export" onclick="window.switchView('export')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📤</span>
-              Export Center
+              <span data-i18n="hub_export">Export Center</span>
             </button>
             <button class="hub-btn hub-btn-purchases" onclick="window.switchView('purchases')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📝</span>
-              Monthly Purchases
+              <span data-i18n="hub_purchases">Monthly Purchases</span>
             </button>
             <button class="hub-btn hub-btn-settings" onclick="window.switchView('settings')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</span>
-              Pricing Settings
+              <span data-i18n="hub_settings">Pricing Settings</span>
             </button>
             <button class="hub-btn hub-btn-calculator" onclick="window.showCalculatorModal()">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧮</span>
-              Calculator
+              <span data-i18n="hub_calculator">Calculator</span>
             </button>
-            <button class="hub-btn hub-btn-backup" onclick="document.getElementById('backup-modal').classList.add('active')">
+            <button class="hub-btn hub-btn-bulk" onclick="window.switchView('bulkUpload')">
+              <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📥</span>
+              <span data-i18n="hub_bulk_upload">Bulk Upload</span>
+            </button>
+            <button class="hub-btn hub-btn-backup" onclick="window.openBackupAuthModal()">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">💾</span>
-              Backup DB
+              <span data-i18n="hub_backup">Backup DB</span>
             </button>
             <button class="hub-btn hub-btn-clean" onclick="document.getElementById('db-clean-modal').classList.add('active')">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧹</span>
-              DB Clean
+              <span data-i18n="hub_clean">DB Clean</span>
             </button>
             <button class="hub-btn hub-btn-logout" onclick="window.logout()">
               <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">🚪</span>
-              Logout
+              <span data-i18n="hub_logout">Logout</span>
             </button>
           </div>
         </div>
 
         <!-- Analysis View -->
         <div id="analysis-view" class="view">
-          <div class="profile-header" style="justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <button class="btn-back-special back-to-dash">&lt;- Back</button>
-              <h2 style="margin: 0;">Member Analysis Box</h2>
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="analysis_title">📊 Member Analysis Box</h1>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
-              <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+              <span style="font-weight: 600; color: var(--primary);" data-i18n="dashboard_month_label">Dashboard Month:</span>
               <input type="month" id="analysis-month" style="border:none; background:transparent;" />
             </div>
           </div>
@@ -122,27 +170,27 @@
           <div style="display: flex; gap: 1.5rem; max-width: 1200px; margin: 0 auto;">
             <div class="card" style="flex: 1;">
               <div class="stat-row" style="margin-top: 0; padding-top: 0; border-top: none;">
-                <span>Total Registered Members:</span>
+                <span data-i18n="stat_total_registered">Total Registered Members:</span>
                 <span id="dash-total-members" style="font-weight: 600;">0</span>
               </div>
               <div class="stat-row">
-                <span>Members Active (This Month):</span>
+                <span data-i18n="stat_members_active">Members Active (This Month):</span>
                 <span id="dash-active-members" style="font-weight: 600;">0</span>
               </div>
               <div class="stat-row">
-                <span>Total Amount Due:</span>
+                <span data-i18n="stat_total_due">Total Amount Due:</span>
                 <span id="dash-total-due" class="text-danger" style="font-weight: 600;">₹0.00</span>
               </div>
               <div class="stat-row">
-                <span>Total Amount Paid:</span>
+                <span data-i18n="stat_total_paid">Total Amount Paid:</span>
                 <span id="dash-total-paid" class="text-success" style="font-weight: 600;">₹0.00</span>
               </div>
               <div class="stat-row" style="margin-top: 0.5rem; border-top: 1px dashed var(--card-border); padding-top: 0.5rem;">
-                <span>Total Litre Cards Sold:</span>
+                <span data-i18n="stat_litre_sold">Total Litre Cards Sold:</span>
                 <span id="dash-litre-cards" class="text-primary" style="font-weight: 600;">0</span>
               </div>
               <div class="stat-row">
-                <span>Total Half-Litre Cards Sold:</span>
+                <span data-i18n="stat_half_sold">Total Half-Litre Cards Sold:</span>
                 <span id="dash-half-cards" class="text-primary" style="font-weight: 600;">0</span>
               </div>
             </div>
@@ -151,11 +199,11 @@
             <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 2rem;">
               <div style="display: flex; justify-content: space-around;">
                 <div style="width: 250px; height: 250px;">
-                  <h4 style="text-align: center; margin-bottom: 0.5rem;">Amount Due vs Paid</h4>
+                  <h4 style="text-align: center; margin-bottom: 0.5rem;" data-i18n="chart_due_vs_paid">Amount Due vs Paid</h4>
                   <canvas id="chartFinance"></canvas>
                 </div>
                 <div style="width: 250px; height: 250px;">
-                  <h4 style="text-align: center; margin-bottom: 0.5rem;">Card Types Sold</h4>
+                  <h4 style="text-align: center; margin-bottom: 0.5rem;" data-i18n="chart_card_types">Card Types Sold</h4>
                   <canvas id="chartCards"></canvas>
                 </div>
               </div>
@@ -165,13 +213,13 @@
 
         <!-- Export View -->
         <div id="export-view" class="view">
-          <div class="profile-header" style="justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <button class="btn-back-special back-to-dash">&lt;- Back</button>
-              <h2 style="margin: 0;">Export Center</h2>
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="export_title">📤 Export Center</h1>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
-              <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+              <span style="font-weight: 600; color: var(--primary);" data-i18n="dashboard_month_label">Dashboard Month:</span>
               <input type="month" id="export-month" style="border:none; background:transparent;" />
             </div>
           </div>
@@ -179,7 +227,7 @@
             <div style="display: flex; flex-direction: column; gap: 1rem;">
               <!-- Export Option 1 -->
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
-                <span style="font-size: 1rem; font-weight: 600;">1. Overall Members Details</span>
+                <span style="font-size: 1rem; font-weight: 600;" data-i18n="export_overall">1. Overall Members Details</span>
                 <div style="display: flex; gap: 0.5rem;">
                   <button class="btn-secondary" onclick="window.exportCSV('overall')">CSV</button>
                   <button class="btn-secondary" onclick="window.exportPDF('overall')">PDF</button>
@@ -187,7 +235,7 @@
               </div>
               <!-- Export Option 2 -->
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
-                <span style="font-size: 1rem; font-weight: 600;">2. Selected Month Purchases</span>
+                <span style="font-size: 1rem; font-weight: 600;" data-i18n="export_month">2. Selected Month Purchases</span>
                 <div style="display: flex; gap: 0.5rem;">
                   <button class="btn-secondary" onclick="window.exportCSV('month')">CSV</button>
                   <button class="btn-secondary" onclick="window.exportPDF('month')">PDF</button>
@@ -196,9 +244,9 @@
               <!-- Export Option 3 -->
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
                 <div style="flex: 1; margin-right: 1rem;">
-                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">3. Selected Member Purchases</span>
+                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;" data-i18n="export_member">3. Selected Member Purchases</span>
                   <div style="position: relative;">
-                    <input type="text" id="export-member-input" placeholder="Exact Member Name or Sample No" style="width: 100%; box-sizing: border-box;" />
+                    <input type="text" id="export-member-input" placeholder="Exact Member Name or Sample No" data-i18n-placeholder="export_member_placeholder" style="width: 100%; box-sizing: border-box;" />
                     <div id="export-member-dropdown" class="dropdown-menu" style="display: none;"></div>
                   </div>
                 </div>
@@ -210,8 +258,8 @@
               <!-- Export Option 4 -->
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px;">
                 <div style="flex: 1; margin-right: 1rem;">
-                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">4. Selected Year Purchases</span>
-                  <input type="number" id="export-year-input" placeholder="Enter Year (e.g., 2026)" style="width: 100%;" />
+                  <span style="font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.5rem;" data-i18n="export_year">4. Selected Year Purchases</span>
+                  <input type="number" id="export-year-input" placeholder="Enter Year (e.g., 2026)" data-i18n-placeholder="export_year_placeholder" style="width: 100%;" />
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
                   <button class="btn-secondary" onclick="window.exportCSV('year')">CSV</button>
@@ -224,15 +272,15 @@
 
         <!-- Settings View -->
         <div id="settings-view" class="view">
-          <div class="profile-header">
-            <button class="btn-back-special back-to-dash">&lt;- Back</button>
-            <h2>Global Pricing Settings</h2>
+          <div class="profile-header" style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem;">
+            <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+            <h1 class="page-title" data-i18n="settings_title">⚙️ Global Pricing Settings</h1>
           </div>
           <div class="card" style="max-width: 600px; margin: 0 auto;">
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
               <div style="display: flex; gap: 1rem; align-items: flex-end;">
                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                  <label>Half-Litre Range</label>
+                  <label data-i18n="setting_half_range">Half-Litre Range</label>
                   <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <input type="number" id="setting-half-min" placeholder="Min" />
                     <span style="color: var(--text-secondary);">to</span>
@@ -240,14 +288,14 @@
                   </div>
                 </div>
                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                  <label>Half-Litre Cost (₹)</label>
+                  <label data-i18n="setting_half_cost">Half-Litre Cost (₹)</label>
                   <input type="number" id="setting-half-litre" />
                 </div>
               </div>
               
               <div style="display: flex; gap: 1rem; align-items: flex-end;">
                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                  <label>Litre Range</label>
+                  <label data-i18n="setting_litre_range">Litre Range</label>
                   <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <input type="number" id="setting-litre-min" placeholder="Min" />
                     <span style="color: var(--text-secondary);">to</span>
@@ -255,29 +303,58 @@
                   </div>
                 </div>
                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                  <label>Litre Cost (₹)</label>
+                  <label data-i18n="setting_litre_cost">Litre Cost (₹)</label>
                   <input type="number" id="setting-litre" />
                 </div>
               </div>
               
               <div style="display: flex; align-items: center; border-top: 1px dashed var(--card-border); padding-top: 1.5rem; margin-top: 0.5rem;">
-                <button id="save-settings-btn" class="btn-success">Save Settings</button>
+                <button id="save-settings-btn" class="btn-success" data-i18n="setting_save_btn">Save Settings</button>
                 <span id="settings-msg" style="margin-left: 0.5rem; color: var(--success); font-weight: 600;"></span>
               </div>
             </div>
+          </div>
+
+          <!-- Display & Zoom Scaling Card -->
+          <div class="card" style="max-width: 600px; margin: 1.5rem auto 0 auto;">
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🔍</span> <span data-i18n="zoom_card_title">Screen Display & Zoom Scaling</span>
+            </h3>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.25rem; line-height: 1.4;" data-i18n="zoom_card_desc">
+              Adjust application scaling to fit your screen. On <strong>Windows 7</strong> or lower-resolution displays where elements look oversized, choosing <strong>80%</strong> or <strong>85%</strong> makes all tables, cards, and buttons fit cleanly.
+            </p>
+            
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+              <span style="font-weight: 600; min-width: 70px;" data-i18n="zoom_scale_label">Scale:</span>
+              <input type="range" id="settings-zoom-slider" min="60" max="140" step="5" value="100" style="flex: 1; cursor: pointer;" />
+              <span id="settings-zoom-val" style="font-weight: 700; color: var(--primary); min-width: 50px; text-align: right;">100%</span>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="0.75">75% (Small)</button>
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="0.80">80% (Win 7)</button>
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="0.85">85% (Optimal)</button>
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="0.90">90% (Compact)</button>
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="1.00">100% (Default)</button>
+              <button type="button" class="btn-secondary zoom-preset-btn" data-zoom="1.15">115% (Large)</button>
+            </div>
+            
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 1rem; border-top: 1px dashed var(--card-border); padding-top: 0.75rem;" data-i18n="zoom_shortcuts">
+              💡 <em>Tip: You can also press <strong>Ctrl +</strong> to zoom in, <strong>Ctrl -</strong> to zoom out, <strong>Ctrl 0</strong> to reset, or hold <strong>Ctrl</strong> and scroll your mouse wheel.</em>
+            </p>
           </div>
         </div>
 
         <!-- Purchases View -->
         <div id="purchases-view" class="view">
-          <div class="profile-header" style="justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <button class="btn-back-special back-to-dash">&lt;- Back</button>
-              <h2 style="margin: 0;">Current Month Purchases</h2>
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="purchases_title">📝 Current Month Purchases</h1>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
               <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
-                <span style="font-weight: 600; color: var(--primary);">Dashboard Month:</span>
+                <span style="font-weight: 600; color: var(--primary);" data-i18n="dashboard_month_label">Dashboard Month:</span>
                 <input type="month" id="purchases-month" style="border:none; background:transparent;" />
               </div>
               <div style="display: flex; gap: 0.5rem;">
@@ -290,12 +367,12 @@
             <table class="data-table" style="width: 100%; border-collapse: collapse;">
               <thead>
                 <tr style="background: var(--hover-bg); text-align: left; border-bottom: 2px solid var(--card-border);">
-                  <th style="padding: 0.75rem;">Member Details</th>
-                  <th style="padding: 0.75rem;">Purchased Cards</th>
-                  <th style="padding: 0.75rem;">Total Paid</th>
-                  <th style="padding: 0.75rem;">Total Due</th>
-                  <th style="padding: 0.75rem;">Total Due Cards</th>
-                  <th style="padding: 0.75rem;">Total Dues</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_member_details">Member Details</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_purchased_cards">Purchased Cards</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_total_paid">Total Paid</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_total_due">Total Due</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_due_cards">Total Due Cards</th>
+                  <th style="padding: 0.75rem;" data-i18n="th_total_dues">Total Dues</th>
                 </tr>
               </thead>
               <tbody id="dashboard-table-body">
@@ -304,32 +381,162 @@
           </div>
         </div>
 
+        <!-- Bulk Upload View -->
+        <div id="bulk-upload-view" class="view">
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="bulk_title">📥 Bulk Upload Members Data</h1>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn-secondary" onclick="window.switchView('membersList')" style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;" data-i18n="bulk_view_members_btn">
+                👥 View All Members
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Step Cards (Download Template & Upload File) -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            
+            <!-- Step 1: Download Template -->
+            <div class="card" style="border-top: 5px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                  <span style="font-size: 2rem;">📄</span>
+                  <div>
+                    <h3 style="margin: 0; color: var(--primary); font-size: 1.15rem;" data-i18n="bulk_step1_title">Step 1: Download Template</h3>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);" data-i18n="bulk_step1_subtitle">Ready-to-use formatted Excel/CSV template</p>
+                  </div>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;" data-i18n="bulk_step1_desc">
+                  Download the official template with predefined headers: <b>Member Name</b>, <b>Mobile Number</b>, and <b>Sample No</b>. Fill it with your members data.
+                </p>
+              </div>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="window.downloadBulkTemplate('xlsx')" style="flex: 1; padding: 0.7rem 1rem; font-size: 0.9rem;" data-i18n="bulk_download_excel">
+                  📊 Download Excel (.xlsx)
+                </button>
+                <button class="btn-secondary" onclick="window.downloadBulkTemplate('csv')" style="flex: 1; padding: 0.7rem 1rem; font-size: 0.9rem;" data-i18n="bulk_download_csv">
+                  📥 Download CSV (.csv)
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Upload File -->
+            <div class="card" style="border-top: 5px solid var(--success); display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                  <span style="font-size: 2rem;">📤</span>
+                  <div>
+                    <h3 style="margin: 0; color: var(--success); font-size: 1.15rem;" data-i18n="bulk_step2_title">Step 2: Upload Members File</h3>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);" data-i18n="bulk_step2_subtitle">Choose your Excel or CSV sheet</p>
+                  </div>
+                </div>
+                
+                <!-- Dropzone Area -->
+                <div id="bulk-upload-dropzone" style="border: 2px dashed var(--primary); background: #f0f7ff; border-radius: 10px; padding: 1.25rem; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                  <div style="font-size: 2rem; margin-bottom: 0.25rem;">📁</div>
+                  <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.2rem;" data-i18n="bulk_dropzone_text">Click or Drag & Drop File Here</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);" data-i18n="bulk_dropzone_sub">Supports .xlsx, .xls, and .csv</div>
+                  <input type="file" id="bulk-upload-file-input" accept=".xlsx, .xls, .csv" style="display: none;" />
+                </div>
+              </div>
+
+              <div id="bulk-selected-file-info" style="display: none; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-primary); background: #e0f2fe; padding: 0.5rem 0.75rem; border-radius: 6px; font-weight: 600;">
+                <span data-i18n="bulk_selected_prefix">Selected: </span><span id="bulk-selected-filename">None</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Uploaded Data Section -->
+          <div id="bulk-preview-section" class="card" style="display: none; margin-bottom: 2rem;">
+            
+            <!-- Summary Header Toolbar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1.5px solid var(--card-border); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+              <div>
+                <h2 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--text-primary);" data-i18n="bulk_preview_title">Preview & Duplicate Validation</h2>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);" data-i18n="bulk_preview_desc">Review uploaded members. Edit duplicates directly in the table or remove rows before submitting.</p>
+              </div>
+
+              <!-- Badges Pill -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span id="bulk-badge-total" style="background: #e2e8f0; color: #1e293b; padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">Total: 0</span>
+                <span id="bulk-badge-valid" style="background: #dcfce7; color: #15803d; padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">✅ Valid: 0</span>
+                <span id="bulk-badge-errors" style="background: #fee2e2; color: #b91c1c; padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">⚠️ Issues: 0</span>
+              </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <button id="bulk-filter-all" class="btn-secondary active" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" onclick="window.filterBulkPreview('all')" data-i18n="bulk_filter_all">Show All</button>
+              <button id="bulk-filter-errors" class="btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" onclick="window.filterBulkPreview('errors')" data-i18n="bulk_filter_issues">Show Only Issues / Duplicates</button>
+              <button id="bulk-filter-valid" class="btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" onclick="window.filterBulkPreview('valid')" data-i18n="bulk_filter_valid">Show Only Valid</button>
+            </div>
+
+            <!-- Interactive Validation Table -->
+            <div style="overflow-x: auto; max-height: 520px; border: 1px solid var(--card-border); border-radius: 8px;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--card-border);">
+                  <tr>
+                    <th style="padding: 0.75rem; width: 50px;">#</th>
+                    <th style="padding: 0.75rem; min-width: 220px;" data-i18n="bulk_th_cand_name">Candidate Name *</th>
+                    <th style="padding: 0.75rem; min-width: 160px;" data-i18n="bulk_th_mobile">Mobile Number</th>
+                    <th style="padding: 0.75rem; min-width: 180px;" data-i18n="bulk_th_sample">Sample No</th>
+                    <th style="padding: 0.75rem; min-width: 240px;" data-i18n="bulk_th_status">Validation Status</th>
+                    <th style="padding: 0.75rem; width: 90px; text-align: center;" data-i18n="bulk_th_action">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="bulk-preview-tbody">
+                  <!-- Injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bottom Action Footer -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--card-border); padding-top: 1.25rem;">
+              <button class="btn-secondary" onclick="window.resetBulkUpload()" style="padding: 0.6rem 1.25rem;" data-i18n="bulk_clear_btn">
+                ✕ Clear & Upload Another File
+              </button>
+              <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <span id="bulk-submit-hint" style="color: var(--danger); font-size: 0.9rem; font-weight: 600; display: none;" data-i18n="bulk_submit_hint">
+                  ⚠️ Please fix or remove all duplicate/invalid rows before submitting.
+                </span>
+                <button id="bulk-submit-btn" class="btn-primary" onclick="window.submitBulkMembers()" style="padding: 0.75rem 1.75rem; font-size: 1rem; font-weight: 700; box-shadow: var(--shadow-md);" data-i18n="bulk_submit_btn">
+                  🚀 Submit & Import Members
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
         <!-- Members List View -->
         <div id="members-list-view" class="view">
-          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <button class="btn-back-special back-to-dash">&lt;- Back</button>
-              <h2 style="margin: 0;">All Members</h2>
+          <div class="profile-header" style="justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button class="btn-back-special back-to-dash"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="all_members_title">👥 All Members</h1>
             </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <button id="clear-filter-btn" class="btn-secondary" style="display: none; padding: 0.5rem 1rem;">Clear Filter ❌</button>
-              <select id="all-members-sort" style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg);">
-                <option value="name-asc">Sort: Name (A-Z)</option>
-                <option value="name-desc">Sort: Name (Z-A)</option>
-                <option value="sample-asc">Sort: Sample No (Low-High)</option>
-                <option value="sample-desc">Sort: Sample No (High-Low)</option>
-              </select>
-              <input type="text" id="all-members-search" placeholder="Search by name or sample no..." style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); width: 250px;" />
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button id="clear-filter-btn" class="btn-secondary" style="display: none; padding: 0.5rem 1rem;" data-i18n="clear_filter">Clear Filter ❌</button>
+              <button class="btn-secondary" onclick="window.switchView('bulkUpload')" title="Bulk Upload of Members Data" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.15rem; font-size: 0.95rem; font-weight: 600; border-radius: 8px; cursor: pointer;">
+                <span style="font-size: 1.1rem; line-height: 1;">📥</span> <span data-i18n="hub_bulk_upload">Bulk Upload</span>
+              </button>
+              <button id="all-members-new-member-btn" class="btn-primary" onclick="window.showNewMemberModal()" title="Register New Member" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; font-size: 0.95rem; font-weight: 600; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 80, 158, 0.25);">
+                <span style="font-size: 1.15rem; line-height: 1;">➕</span> <span data-i18n="register_member_btn">Register Member</span>
+              </button>
             </div>
           </div>
           
           <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
             <!-- Target Period Box -->
             <div class="card" style="flex: 1; min-width: 200px; padding: 1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; text-align: center;">
-              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Target Period</span>
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="target_period_title">Target Period</span>
               <div style="display: flex; gap: 1rem; font-size: 0.9rem;">
-                <label><input type="radio" name="period-type" value="month" checked> Month</label>
-                <label><input type="radio" name="period-type" value="year"> Year</label>
+                <label><input type="radio" name="period-type" value="month" checked> <span data-i18n="period_month">Month</span></label>
+                <label><input type="radio" name="period-type" value="year"> <span data-i18n="period_year">Year</span></label>
               </div>
               <input type="month" id="all-members-month" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--primary); background: #e0f2fe; color: var(--primary); font-weight: 600; font-size: 1rem; width: 100%; max-width: 220px; outline: none; cursor: pointer;" />
               <input type="number" id="all-members-year" style="display: none; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--primary); background: #e0f2fe; color: var(--primary); font-weight: 600; font-size: 1rem; width: 100%; max-width: 220px; outline: none;" placeholder="YYYY" min="2000" max="2100" />
@@ -337,20 +544,39 @@
             
             <!-- Total Members Box -->
             <div id="box-total-members" class="card highlightable" style="flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--primary); cursor: pointer; transition: transform 0.2s;">
-              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Total Members</span>
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;" data-i18n="box_total_members">Total Members</span>
               <span id="all-members-total-count" style="font-size: 2.5rem; font-weight: 700; color: var(--primary); line-height: 1;">0</span>
             </div>
             
             <!-- Active This Month Box -->
             <div id="box-active-members" class="card highlightable" style="position: relative; flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--success); cursor: pointer; transition: transform 0.2s;">
-              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Active Target Period</span>
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;" data-i18n="box_active_period">Active Target Period</span>
               <span id="all-members-active-count" style="font-size: 2.5rem; font-weight: 700; color: var(--success); line-height: 1;">0</span>
             </div>
 
             <!-- Total Due This Month Box -->
             <div id="box-total-due" class="card highlightable" style="flex: 1; min-width: 200px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 4px solid var(--danger); cursor: pointer; transition: transform 0.2s;">
-              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Total Due (Target)</span>
+              <span style="font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 0.5rem;" data-i18n="box_total_due">Total Due (Target)</span>
               <span id="all-members-total-due" style="font-size: 2rem; font-weight: 700; color: var(--danger); line-height: 1.2;">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Highlighted Search & Filter Toolbar (Directly before Members List) -->
+          <div class="members-search-toolbar card">
+            <div class="search-input-wrapper">
+              <span class="search-icon-inside" aria-hidden="true">🔍</span>
+              <input type="text" id="all-members-search" class="highlighted-search-input" placeholder="Search members by Name, Sample Number, or Mobile Number..." data-i18n-placeholder="search_members_placeholder" autocomplete="off" />
+              <button id="all-members-search-clear" class="search-clear-btn" title="Clear search" style="display: none;" aria-label="Clear Search">✕</button>
+            </div>
+            
+            <div class="search-toolbar-actions">
+              <select id="all-members-sort" class="members-sort-select">
+                <option value="name-asc" data-i18n="sort_name_asc">Sort: Name (A-Z)</option>
+                <option value="name-desc" data-i18n="sort_name_desc">Sort: Name (Z-A)</option>
+                <option value="sample-asc" data-i18n="sort_sample_asc">Sort: Sample No (Low-High)</option>
+                <option value="sample-desc" data-i18n="sort_sample_desc">Sort: Sample No (High-Low)</option>
+              </select>
+              <span id="members-count-badge" class="members-count-pill">0 Members</span>
             </div>
           </div>
 
@@ -363,19 +589,65 @@
 
         <!-- Candidate Profile View -->
         <div id="profile-view" class="view">
-          <div class="profile-header" style="justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 1.5rem;">
-              <button id="profile-back-btn" class="btn-back-special">&lt;- Back</button>
-              <h2 id="profile-name">Candidate Name</h2>
-              <span class="badge" id="profile-sample-no"></span>
-              <span class="badge" id="profile-mobile-no" style="background: var(--primary); color: white; display: none;"></span>
-              <button id="edit-profile-btn" class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">✏️ Edit</button>
-              <button id="delete-profile-btn" class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; color: var(--danger);">🗑️ Delete</button>
+          
+          <!-- Top Profile Navigation Row -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <button id="profile-back-btn" class="btn-back-special"><span class="back-arrow">&lt;-</span> <span data-i18n="back_text">Back</span></button>
+              <h1 class="page-title" data-i18n="profile_title">👤 Member Profile</h1>
             </div>
-            
-            <div style="display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--card-border);">
-              <span style="font-weight: 600; color: var(--primary);">View Month:</span>
-              <input type="month" id="global-month-filter" style="width: auto; padding: 0.25rem 0.5rem; background: transparent; border: none; box-shadow: none;" />
+            <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--card-border);">
+              <span style="font-weight: 600; color: var(--primary);" data-i18n="view_month_label">View Month:</span>
+              <input type="month" id="global-month-filter" style="width: auto; padding: 0.25rem 0.5rem; background: transparent; border: none; box-shadow: none; font-weight: 600;" />
+            </div>
+          </div>
+
+          <!-- Highlighted Member Profile Banner -->
+          <div class="member-profile-banner card" style="margin-bottom: 1.5rem; padding: 1.25rem 1.5rem; border-left: 6px solid var(--primary); background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              
+              <div style="display: flex; align-items: center; gap: 1.25rem;">
+                <div style="width: 56px; height: 56px; border-radius: 12px; background: #e0f2fe; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.85rem; box-shadow: var(--shadow-sm); border: 2px solid rgba(0, 80, 158, 0.2); flex-shrink: 0;">
+                  👤
+                </div>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.75px; color: var(--primary); margin-bottom: 3px;" data-i18n="member_details_badge">
+                    Member Details
+                  </div>
+                  <div style="display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 1.15rem; color: var(--text-secondary); font-weight: 600;" data-i18n="lbl_name">Name:</span>
+                    <h1 id="profile-name" style="margin: 0; font-size: 1.7rem; font-weight: 700; color: var(--text-primary); display: inline-block; line-height: 1.2;">
+                      Candidate Name
+                    </h1>
+                  </div>
+                  
+                  <!-- Badges Row for Sample No & Mobile -->
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                    <!-- Sample Number Highlight Box -->
+                    <div id="profile-sample-container" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.95rem; font-weight: 700; background: #e0f2fe; color: var(--primary); border: 1.5px solid #00509e;">
+                      <span data-i18n="lbl_sample_no">Sample No:</span>
+                      <span id="profile-sample-no" style="font-size: 1.05rem;">Not Assigned</span>
+                    </div>
+
+                    <!-- Mobile Number Box -->
+                    <div id="profile-mobile-container" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; background: #f8fafc; color: var(--text-primary); border: 1px solid var(--card-border);">
+                      <span data-i18n="lbl_mobile">📱 Mobile:</span>
+                      <span id="profile-mobile-no">N/A</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <button id="edit-profile-btn" class="btn-secondary" style="padding: 0.6rem 1.1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;" data-i18n="edit_profile_btn">
+                  ✏️ Edit Profile
+                </button>
+                <button id="delete-profile-btn" class="btn-secondary" style="padding: 0.6rem 1.1rem; font-weight: 600; color: var(--danger); border-color: rgba(239, 68, 68, 0.35); display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;" data-i18n="delete_profile_btn">
+                  🗑️ Delete Member
+                </button>
+              </div>
+
             </div>
           </div>
 
@@ -383,13 +655,13 @@
             <!-- Left Column: Notes & Financials & Analytics -->
             <div class="left-col">
               <div class="card">
-                <h3>Overall Dues Overview</h3>
+                <h3 data-i18n="overall_dues_title">Overall Dues Overview</h3>
                 <div class="stat-row" style="margin-top: 0; border-top: none; padding-top: 0;">
-                  <span>Overall Total Due</span>
+                  <span data-i18n="overall_total_due_lbl">Overall Total Due</span>
                   <span id="overall-total-due" class="text-danger" style="font-size: 1.25rem;">₹0.00</span>
                 </div>
                 <div style="margin-top: 1.5rem;">
-                  <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Monthly Breakdown (Unpaid)</h4>
+                  <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;" data-i18n="monthly_breakdown_lbl">Monthly Breakdown (Unpaid)</h4>
                   <div id="monthly-dues-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
                     <!-- Monthly dues injected here -->
                   </div>
@@ -397,24 +669,24 @@
               </div>
 
               <div class="card financials-card" style="margin-top: 1.5rem;">
-                <h3>Financial Summary (Selected Month)</h3>
+                <h3 data-i18n="financial_summary_title">Financial Summary (Selected Month)</h3>
                 <div class="stat-row">
-                  <span>Total Amount Paid</span>
+                  <span data-i18n="th_total_paid">Total Amount Paid</span>
                   <span id="total-paid" class="text-success">₹0.00</span>
                 </div>
                 <div class="stat-row">
-                  <span>Total Amount Due</span>
+                  <span data-i18n="th_total_due">Total Amount Due</span>
                   <span id="total-due" class="text-danger">₹0.00</span>
                 </div>
                 <div class="stat-row">
-                  <span>Cards Taken</span>
+                  <span data-i18n="cards_taken_lbl">Cards Taken</span>
                   <span id="analytics-card-count" class="text-primary">0</span>
                 </div>
               </div>
 
               <div class="card highlightable" id="notes-card" style="margin-top: 1.5rem;">
-                <h3>Alerts / Notes</h3>
-                <textarea id="notes-input" placeholder="Type any important notes or alerts here..."></textarea>
+                <h3 data-i18n="alerts_notes_title">Alerts / Notes</h3>
+                <textarea id="notes-input" placeholder="Type any important notes or alerts here..." data-i18n-placeholder="notes_placeholder"></textarea>
               </div>
             </div>
 
@@ -422,19 +694,19 @@
             <div class="right-col">
               <div class="card">
                 <div class="cards-header">
-                  <h3>Cards</h3>
-                  <button id="add-card-btn" class="btn-primary">+ Add Card</button>
+                  <h3 data-i18n="cards_section_title">Cards</h3>
+                  <button id="add-card-btn" class="btn-primary" data-i18n="add_card_btn">+ Add Card</button>
                 </div>
                 
                 <div id="add-card-form" class="form-container" style="display: none;">
                   <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
                     <div style="display: flex; gap: 1rem; width: 100%;">
-                      <input type="number" id="new-card-number" placeholder="Card Number" style="flex: 1;" />
-                      <input type="number" id="new-card-cost" placeholder="Cost (₹)" step="0.01" style="flex: 1;" />
+                      <input type="number" id="new-card-number" placeholder="Card Number" data-i18n-placeholder="card_number_placeholder" style="flex: 1;" />
+                      <input type="number" id="new-card-cost" placeholder="Cost (₹)" data-i18n-placeholder="card_cost_placeholder" step="0.01" style="flex: 1;" />
                     </div>
                     <div class="form-actions" style="width: 100%;">
-                      <button id="save-card-btn" class="btn-success">Save</button>
-                      <button id="cancel-card-btn" class="btn-secondary">Cancel</button>
+                      <button id="save-card-btn" class="btn-success" data-i18n="save_btn">Save</button>
+                      <button id="cancel-card-btn" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
                     </div>
                   </div>
                 </div>
@@ -450,24 +722,28 @@
         <!-- Create Candidate Modal -->
         <div id="create-modal" class="modal">
           <div class="modal-content card">
-            <h2>New Member</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Add a new candidate to the system.</p>
+            <h2 data-i18n="modal_new_member_title">New Member</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;" data-i18n="modal_new_member_desc">Add a new candidate to the system.</p>
             
             <div class="form-group">
-              <label>Candidate Name <span style="color: var(--danger);">(Mandatory)</span></label>
-              <input type="text" id="new-name" placeholder="Enter Full Name" style="border: 2px solid var(--danger);" />
+              <label data-i18n="modal_candidate_name_mandatory">Candidate Name (Mandatory)</label>
+              <input type="text" id="new-name" placeholder="Enter Full Name" data-i18n-placeholder="candidate_name" style="border: 2px solid var(--danger);" />
+              <div id="new-name-warn" style="display: none; color: #dc2626; background: #fef2f2; border: 1.5px solid #f87171; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.88rem; margin-top: 0.5rem; line-height: 1.45; font-weight: 500; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1);">
+                <span style="font-size: 1.1rem; vertical-align: middle; margin-right: 4px;">⚠️</span> <span data-i18n="modal_dup_name_warning"><strong style="color: #b91c1c;">Duplicate Name Detected:</strong> A member with this name already exists. A unique <b style="color: #dc2626; text-decoration: underline;">Sample Number is MANDATORY</b> to distinguish them.</span>
+              </div>
             </div>
             <div class="form-group">
-              <label>Mobile Number (Optional)</label>
-              <input type="text" id="new-mobile-no" placeholder="Enter Mobile Number" />
+              <label data-i18n="modal_mobile_optional">Mobile Number (Optional)</label>
+              <input type="text" id="new-mobile-no" placeholder="Enter Mobile Number" data-i18n-placeholder="mobile_no" />
             </div>
             <div class="form-group">
-              <label>Sample No (Optional)</label>
-              <input type="text" id="new-sample-no" placeholder="Leave blank to auto-generate" />
+              <label id="new-sample-no-label" data-i18n="modal_sample_optional">Sample No (Optional)</label>
+              <input type="text" id="new-sample-no" placeholder="Leave blank to auto-generate" data-i18n-placeholder="modal_sample_placeholder" />
+              <p id="new-sample-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 0.35rem; display: none; font-weight: 500;"></p>
             </div>
             <div class="form-actions">
-              <button id="save-candidate-btn" class="btn-primary">Save Member</button>
-              <button id="cancel-candidate-btn" class="btn-secondary">Cancel</button>
+              <button id="save-candidate-btn" class="btn-primary" data-i18n="modal_save_member_btn">Save Member</button>
+              <button id="cancel-candidate-btn" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
             </div>
           </div>
         </div>
@@ -478,22 +754,26 @@
     <!-- Edit Candidate Modal -->
     <div id="edit-modal" class="modal">
       <div class="modal-content card">
-        <h2>Edit Member Profile</h2>
+        <h2 data-i18n="modal_edit_member_title">Edit Member Profile</h2>
         <div class="form-group">
-          <label>Member Name <span style="color: var(--danger);">*</span></label>
+          <label data-i18n="modal_candidate_name_mandatory">Member Name *</label>
           <input type="text" id="edit-member-name" style="border: 2px solid var(--danger);" />
+          <div id="edit-name-warn" style="display: none; color: #dc2626; background: #fef2f2; border: 1.5px solid #f87171; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.88rem; margin-top: 0.5rem; line-height: 1.45; font-weight: 500; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1);">
+            <span style="font-size: 1.1rem; vertical-align: middle; margin-right: 4px;">⚠️</span> <span data-i18n="modal_dup_name_warning"><strong style="color: #b91c1c;">Duplicate Name Detected:</strong> Another member with this name already exists. A unique <b style="color: #dc2626; text-decoration: underline;">Sample Number is MANDATORY</b> to distinguish them.</span>
+          </div>
         </div>
         <div class="form-group">
-          <label>Mobile Number (Optional)</label>
+          <label data-i18n="modal_mobile_optional">Mobile Number (Optional)</label>
           <input type="text" id="edit-member-mobile-no" />
         </div>
         <div class="form-group">
-          <label>Sample Number (Optional)</label>
+          <label id="edit-sample-no-label" data-i18n="modal_sample_optional">Sample Number (Optional)</label>
           <input type="text" id="edit-member-sample-no" />
+          <p id="edit-sample-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 0.35rem; display: none; font-weight: 500;"></p>
         </div>
         <div class="form-actions">
-          <button id="save-edit-member-btn" class="btn-success">Save Changes</button>
-          <button id="cancel-edit-member-btn" class="btn-secondary">Cancel</button>
+          <button id="save-edit-member-btn" class="btn-success" data-i18n="modal_edit_save_btn">Save Changes</button>
+          <button id="cancel-edit-member-btn" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
         </div>
       </div>
     </div>
@@ -502,7 +782,7 @@
     <div id="calculator-modal" class="modal">
       <div class="modal-content card" style="max-width: 320px; padding: 1.5rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="margin: 0; font-size: 1.25rem;">Calculator</h2>
+          <h2 style="margin: 0; font-size: 1.25rem;" data-i18n="modal_calc_title">Calculator</h2>
           <button class="btn-icon" onclick="document.getElementById('calculator-modal').classList.remove('active')" style="padding: 0;">✖</button>
         </div>
         <div class="calc-container">
@@ -537,17 +817,31 @@
       </div>
     </div>
 
+    <!-- Backup Auth Passcode Modal -->
+    <div id="backup-auth-modal" class="modal">
+      <div class="modal-content card" style="max-width: 400px; text-align: center;">
+        <h2 style="color: var(--primary); margin-bottom: 0.5rem;" data-i18n="modal_backup_title">Database Backup</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;" data-i18n="modal_backup_auth_desc">Enter passcode to access Database Backup & Restore.</p>
+        <input type="password" id="backup-passcode" placeholder="Passcode" data-i18n-placeholder="modal_passcode_placeholder" style="margin-bottom: 1rem; width: 100%; text-align: center;" autocomplete="off" />
+        <p id="backup-passcode-error" style="color: var(--danger); margin-bottom: 1rem; display: none; font-size: 0.9rem; font-weight: 600;">Invalid passcode!</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button id="confirm-backup-auth-btn" class="btn-primary" data-i18n="modal_unlock_btn">Unlock</button>
+          <button onclick="window.closeBackupAuthModal()" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Backup Modal -->
     <div id="backup-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="margin: 0; font-size: 1.5rem;">Database Backup</h2>
+          <h2 style="margin: 0; font-size: 1.5rem;" data-i18n="modal_backup_title">Database Backup</h2>
           <button class="btn-icon" onclick="document.getElementById('backup-modal').classList.remove('active')" style="padding: 0;">✖</button>
         </div>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Export a copy of your database for safekeeping, or restore an existing backup file. <b>Note: Restoring a backup will overwrite all current data!</b></p>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;" data-i18n="modal_backup_desc">Export a copy of your database for safekeeping, or restore an existing backup file. <b>Note: Restoring a backup will overwrite all current data!</b></p>
         <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <button class="btn-primary" onclick="window.exportBackup()" style="padding: 1rem; font-size: 1rem;">📤 Export Backup</button>
-          <button class="btn-danger" onclick="window.restoreBackup()" style="padding: 1rem; font-size: 1rem; background: var(--danger); color: white;">📥 Restore Backup</button>
+          <button class="btn-primary" onclick="window.exportBackup()" style="padding: 1rem; font-size: 1rem;" data-i18n="modal_export_backup_btn">📤 Export Backup</button>
+          <button class="btn-danger" onclick="window.restoreBackup()" style="padding: 1rem; font-size: 1rem; background: var(--danger); color: white;" data-i18n="modal_restore_backup_btn">📥 Restore Backup</button>
         </div>
       </div>
     </div>
@@ -555,13 +849,13 @@
     <!-- DB Clean Modal -->
     <div id="db-clean-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--danger);">Clean Database</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Enter passcode to delete ALL data and start fresh.</p>
-        <input type="password" id="db-clean-passcode" placeholder="Passcode" style="margin-bottom: 1rem; width: 100%; text-align: center;" />
+        <h2 style="color: var(--danger);" data-i18n="modal_db_clean_title">Clean Database</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="modal_db_clean_desc">Enter passcode to delete ALL data and start fresh.</p>
+        <input type="password" id="db-clean-passcode" placeholder="Passcode" data-i18n-placeholder="modal_passcode_placeholder" style="margin-bottom: 1rem; width: 100%; text-align: center;" />
         <p id="db-clean-error" style="color: var(--danger); margin-bottom: 1rem; display: none;">Invalid passcode!</p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="confirm-db-clean-btn" class="btn-primary" style="background: var(--danger);">Confirm Clean</button>
-          <button onclick="document.getElementById('db-clean-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+          <button id="confirm-db-clean-btn" class="btn-primary" style="background: var(--danger);" data-i18n="modal_confirm_clean_btn">Confirm Clean</button>
+          <button onclick="document.getElementById('db-clean-modal').classList.remove('active')" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
         </div>
       </div>
     </div>
@@ -569,11 +863,11 @@
     <!-- Logout Modal -->
     <div id="logout-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--primary); margin-bottom: 1rem;">Confirm Logout</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
+        <h2 style="color: var(--primary); margin-bottom: 1rem;" data-i18n="modal_logout_title">Confirm Logout</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="modal_logout_desc">Are you sure you want to log out?</p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="confirm-logout-btn" class="btn-primary">Logout</button>
-          <button onclick="document.getElementById('logout-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+          <button id="confirm-logout-btn" class="btn-primary" data-i18n="modal_logout_btn">Logout</button>
+          <button onclick="document.getElementById('logout-modal').classList.remove('active')" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
         </div>
       </div>
     </div>
@@ -581,11 +875,11 @@
     <!-- Confirm Restore Modal -->
     <div id="confirm-restore-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--danger); margin-bottom: 1rem;">Confirm Restore</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">WARNING: Restoring a backup will permanently overwrite your current database. The app will restart automatically. Are you sure you want to proceed?</p>
+        <h2 style="color: var(--danger); margin-bottom: 1rem;" data-i18n="modal_restore_title">Confirm Restore</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="modal_restore_desc">WARNING: Restoring a backup will permanently overwrite your current database. The app will restart automatically. Are you sure you want to proceed?</p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="proceed-restore-btn" class="btn-primary" style="background: var(--danger);">Restore</button>
-          <button onclick="document.getElementById('confirm-restore-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+          <button id="proceed-restore-btn" class="btn-primary" style="background: var(--danger);" data-i18n="modal_restore_btn">Restore</button>
+          <button onclick="document.getElementById('confirm-restore-modal').classList.remove('active')" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
         </div>
       </div>
     </div>
@@ -593,21 +887,21 @@
     <!-- Confirm DB Clean Final Modal -->
     <div id="confirm-db-clean-final-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--danger); margin-bottom: 1rem;">Final Warning</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Are you absolutely sure? This will wipe EVERYTHING and cannot be undone!</p>
+        <h2 style="color: var(--danger); margin-bottom: 1rem;" data-i18n="modal_final_warning_title">Final Warning</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="modal_final_warning_desc">Are you absolutely sure? This will wipe EVERYTHING and cannot be undone!</p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="proceed-db-clean-btn" class="btn-primary" style="background: var(--danger);">Wipe Data</button>
-          <button onclick="document.getElementById('confirm-db-clean-final-modal').classList.remove('active')" class="btn-secondary">Cancel</button>
+          <button id="proceed-db-clean-btn" class="btn-primary" style="background: var(--danger);" data-i18n="modal_wipe_btn">Wipe Data</button>
+          <button onclick="document.getElementById('confirm-db-clean-final-modal').classList.remove('active')" class="btn-secondary" data-i18n="cancel_btn">Cancel</button>
         </div>
       </div>
     </div>
     <!-- Custom Alert Modal -->
     <div id="custom-alert-modal" class="modal">
-      <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--primary); margin-bottom: 1rem;">Notification</h2>
-        <p id="custom-alert-message" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
+      <div class="modal-content card" style="max-width: 420px; text-align: center; border-radius: 12px; border-top: 5px solid var(--danger); box-shadow: var(--shadow-lg);">
+        <h2 id="custom-alert-title" style="color: var(--danger); margin-bottom: 1rem; font-size: 1.4rem;">⚠️ Notification</h2>
+        <p id="custom-alert-message" style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5; white-space: pre-line;"></p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="custom-alert-ok-btn" class="btn-primary">OK</button>
+          <button id="custom-alert-ok-btn" class="btn-primary" style="background: var(--danger); min-width: 110px; font-weight: 600; padding: 0.6rem 1.5rem;" data-i18n="ok_btn">OK</button>
         </div>
       </div>
     </div>
@@ -615,15 +909,16 @@
     <!-- Custom Confirm Modal -->
     <div id="custom-confirm-modal" class="modal">
       <div class="modal-content card" style="max-width: 400px; text-align: center;">
-        <h2 style="color: var(--danger); margin-bottom: 1rem;">Confirm Action</h2>
+        <h2 style="color: var(--danger); margin-bottom: 1rem;" data-i18n="confirm_action">Confirm Action</h2>
         <p id="custom-confirm-message" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
         <div class="form-actions" style="justify-content: center;">
-          <button id="custom-confirm-yes-btn" class="btn-primary" style="background: var(--danger);">Yes</button>
-          <button id="custom-confirm-no-btn" class="btn-secondary">No</button>
+          <button id="custom-confirm-yes-btn" class="btn-primary" style="background: var(--danger);" data-i18n="yes_btn">Yes</button>
+          <button id="custom-confirm-no-btn" class="btn-secondary" data-i18n="no_btn">No</button>
         </div>
       </div>
     </div>
 
+    <script src="../node_modules/xlsx/dist/xlsx.full.min.js"></script>
     <script src="../node_modules/jspdf/dist/jspdf.umd.min.js"></script>
     <script src="../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="../node_modules/chart.js/dist/chart.umd.js"></script>

@@ -105,6 +105,29 @@ class Store {
     });
   }
 
+  saveCandidates(candidates) {
+    return new Promise((resolve, reject) => {
+      if (!candidates || candidates.length === 0) return resolve(true);
+      this.db.serialize(() => {
+        this.db.run('BEGIN TRANSACTION');
+        const stmt = this.db.prepare('INSERT OR REPLACE INTO candidates (id, data) VALUES (?, ?)');
+        for (const candidate of candidates) {
+          stmt.run(candidate.id, JSON.stringify(candidate));
+        }
+        stmt.finalize((err) => {
+          if (err) {
+            this.db.run('ROLLBACK');
+            return reject(err);
+          }
+          this.db.run('COMMIT', (commitErr) => {
+            if (commitErr) return reject(commitErr);
+            resolve(true);
+          });
+        });
+      });
+    });
+  }
+
   deleteCandidate(id) {
     return new Promise((resolve, reject) => {
       this.db.run('DELETE FROM candidates WHERE id = ?', [id], function(err) {
